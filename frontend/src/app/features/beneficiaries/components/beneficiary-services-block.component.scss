@@ -63,17 +63,33 @@
 }
 
 .service-option {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
   gap: 10px;
+  align-items: start;
+  width: 100%;
+  padding: 8px 0;
 }
 
-.service-option span {
+.service-option__checkbox {
+  width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+}
+
+.service-option__content {
   display: grid;
   gap: 4px;
+  min-width: 0;
 }
 
-.service-option small {
+.service-option__content strong,
+.service-option__content small {
+  display: block;
+  word-break: break-word;
+}
+
+.service-option__content small {
   color: #6b7280;
 }
 

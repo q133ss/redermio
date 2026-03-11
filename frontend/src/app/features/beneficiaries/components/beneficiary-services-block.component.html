@@ -34,11 +34,12 @@
               @for (service of filteredServices(); track trackServiceById($index, service)) {
                 <label class="service-option">
                   <input
+                    class="service-option__checkbox"
                     type="checkbox"
                     [checked]="isSelected(service.id)"
                     (change)="toggleServiceSelection(service.id, $any($event.target).checked)"
                   />
-                  <span>
+                  <span class="service-option__content">
                     <strong>{{ service.name }}</strong>
                     @if (service.description) {
                       <small>{{ service.description }}</small>
