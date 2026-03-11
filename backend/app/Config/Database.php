@@ -26,24 +26,22 @@ class Database extends Config
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => 'localhost',
-        'username'     => '',
-        'password'     => '',
-        'database'     => '',
-        'DBDriver'     => 'MySQLi',
+        'hostname'     => 'db',
+        'username'     => 'redermio',
+        'password'     => 'redermio',
+        'database'     => 'redermio',
+        'DBDriver'     => 'Postgre',
+        'schema'       => 'public',
         'DBPrefix'     => '',
         'pConnect'     => false,
         'DBDebug'      => true,
-        'charset'      => 'utf8mb4',
-        'DBCollat'     => 'utf8mb4_general_ci',
+        'charset'      => 'utf8',
         'swapPre'      => '',
         'encrypt'      => false,
         'compress'     => false,
         'strictOn'     => false,
         'failover'     => [],
-        'port'         => 3306,
-        'numberNative' => false,
-        'foundRows'    => false,
+        'port'         => 5432,
         'dateFormat'   => [
             'date'     => 'Y-m-d',
             'datetime' => 'Y-m-d H:i:s',
@@ -193,6 +191,12 @@ class Database extends Config
     public function __construct()
     {
         parent::__construct();
+
+        $this->default['hostname'] = (string) env('DB_HOST', $this->default['hostname']);
+        $this->default['username'] = (string) env('DB_USERNAME', $this->default['username']);
+        $this->default['password'] = (string) env('DB_PASSWORD', $this->default['password']);
+        $this->default['database'] = (string) env('DB_DATABASE', $this->default['database']);
+        $this->default['port']     = (int) env('DB_PORT', (string) $this->default['port']);
 
         // Ensure that we always set the database group to 'tests' if
         // we are currently running an automated test suite, so that

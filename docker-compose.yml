@@ -11,6 +11,11 @@ services:
     environment:
       CI_ENVIRONMENT: "${CI_ENVIRONMENT:-development}"
       APP_BASE_URL: "${APP_BASE_URL:-http://localhost:8080/}"
+      DB_HOST: "${DB_HOST:-db}"
+      DB_PORT: "${DB_PORT:-5432}"
+      DB_DATABASE: "${DB_DATABASE:-redermio}"
+      DB_USERNAME: "${DB_USERNAME:-redermio}"
+      DB_PASSWORD: "${DB_PASSWORD:-redermio}"
     networks:
       - redermio
 
