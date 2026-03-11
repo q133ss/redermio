@@ -76,6 +76,40 @@ class BeneficiaryManager
     }
 
     /**
+     * @param array<string, mixed> $filters
+     * @return array<int, array<string, mixed>>
+     */
+    public function getExportList(array $filters): array
+    {
+        $search = trim((string) ($filters['search'] ?? ''));
+        $type = $this->normalizeTypeFilter($filters['type'] ?? null);
+
+        $builder = $this->createBaseBuilder();
+        $this->applyFilters($builder, $search, $type);
+
+        $items = $builder
+            ->select([
+                'id',
+                'type',
+                'full_name',
+                'short_name',
+                'document_number',
+                'tax_number',
+                'phone',
+                'email',
+                'address',
+                'notes',
+                'created_at',
+                'updated_at',
+            ])
+            ->orderBy('full_name', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        return array_map($this->mapBeneficiaryRow(...), $items);
+    }
+
+    /**
      * @return array<string, mixed>|null
      */
     public function getById(int $id): ?array
