@@ -1,7 +1,7 @@
 FROM node:20-alpine
 
-RUN npm install -g @angular/cli http-server
+RUN npm install -g @angular/cli
 
 WORKDIR /app
 
-CMD ["sh", "-c", "if [ -f package.json ]; then npm install && ng serve --host 0.0.0.0 --port 4200; else http-server /app -p 4200 -a 0.0.0.0; fi"]
+CMD ["sh", "-lc", "if [ ! -d node_modules ] || [ ! -f node_modules/@angular/cli/package.json ]; then npm install; fi && ng serve --host 0.0.0.0 --port 4200 --poll 2000"]
