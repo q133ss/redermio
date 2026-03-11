@@ -1,0 +1,53 @@
+<section class="beneficiary-list-page">
+  <header class="page-header">
+    <div>
+      <h1>Перечень благополучателей</h1>
+      <p>Всего записей: {{ meta().total }}</p>
+    </div>
+
+    <button type="button" class="refresh-button" (click)="reload()">Обновить</button>
+  </header>
+
+  @if (isLoading()) {
+    <p class="state-message">Загрузка списка...</p>
+  } @else if (errorMessage(); as errorMessage) {
+    <div class="state-box state-box_error">
+      <p>{{ errorMessage }}</p>
+      <button type="button" class="refresh-button" (click)="reload()">Повторить</button>
+    </div>
+  } @else if (beneficiaries().length === 0) {
+    <p class="state-message">Список благополучателей пока пуст.</p>
+  } @else {
+    <div class="table-wrapper">
+      <table class="beneficiaries-table">
+        <thead>
+          <tr>
+            <th>Тип</th>
+            <th>Полное имя</th>
+            <th>Телефон</th>
+            <th>Email</th>
+            <th>ИНН</th>
+            <th>Документ</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (beneficiary of beneficiaries(); track trackById($index, beneficiary)) {
+            <tr>
+              <td>{{ getTypeLabel(beneficiary.type) }}</td>
+              <td>{{ beneficiary.full_name }}</td>
+              <td>{{ beneficiary.phone || '—' }}</td>
+              <td>{{ beneficiary.email || '—' }}</td>
+              <td>{{ beneficiary.tax_number || '—' }}</td>
+              <td>{{ beneficiary.document_number || '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="table-meta">
+      Страница {{ meta().page }} из {{ meta().last_page }}. Показано {{ beneficiaries().length }} из
+      {{ meta().total }} записей.
+    </p>
+  }
+</section>
