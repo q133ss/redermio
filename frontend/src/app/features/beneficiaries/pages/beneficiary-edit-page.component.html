@@ -1,0 +1,34 @@
+<section class="beneficiary-page">
+  <header class="page-header">
+    <div>
+      <h1>Редактирование благополучателя</h1>
+      <p>Измените данные карточки и сохраните результат.</p>
+    </div>
+    <a routerLink="/beneficiaries" class="back-link">К списку</a>
+  </header>
+
+  @if (errorMessage(); as errorMessage) {
+    <p class="page-error">{{ errorMessage }}</p>
+  }
+
+  @if (successMessage(); as successMessage) {
+    <p class="page-success">{{ successMessage }}</p>
+  }
+
+  @if (isLoading()) {
+    <p class="page-muted">Загрузка карточки...</p>
+  } @else if (beneficiary(); as beneficiary) {
+    <app-beneficiary-form
+      [initialValue]="beneficiary"
+      [isSaving]="isSaving()"
+      [fieldErrors]="fieldErrors()"
+      [submitLabel]="'Сохранить изменения'"
+      [cancelLink]="'/beneficiaries'"
+      (formSubmitted)="save($event)"
+    ></app-beneficiary-form>
+
+    <button type="button" class="delete-button" (click)="deleteBeneficiary()" [disabled]="isDeleting()">
+      {{ isDeleting() ? 'Удаление...' : 'Удалить благополучателя' }}
+    </button>
+  }
+</section>

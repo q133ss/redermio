@@ -13,6 +13,10 @@ export interface BeneficiaryListItem {
   updated_at: string;
 }
 
+export interface Beneficiary extends BeneficiaryListItem {
+  deleted_at: string | null;
+}
+
 export interface PaginationMeta {
   page: number;
   per_page: number;
@@ -36,4 +40,29 @@ export interface BeneficiaryListResponse {
   data: BeneficiaryListItem[];
   meta: PaginationMeta;
   filters: BeneficiaryFilters;
+}
+
+export interface BeneficiaryResponse {
+  data: Beneficiary;
+}
+
+export interface BeneficiaryPayload {
+  type: 'individual' | 'legal_entity';
+  full_name: string;
+  short_name: string | null;
+  document_number: string | null;
+  tax_number: string | null;
+  phone: string | null;
+  email: string | null;
+  address: string | null;
+  notes: string | null;
+}
+
+export interface ApiValidationErrorResponse {
+  message: string;
+  errors: Record<string, string>;
+}
+
+export interface ApiMessageResponse {
+  message: string;
 }

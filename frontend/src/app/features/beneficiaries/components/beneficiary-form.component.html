@@ -1,0 +1,83 @@
+<form class="beneficiary-form" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="form-grid">
+    <label class="field">
+      <span>Тип</span>
+      <select formControlName="type">
+        <option value="individual">Физическое лицо</option>
+        <option value="legal_entity">Юридическое лицо</option>
+      </select>
+      @if (getFieldError('type'); as error) {
+        <small class="field-error">{{ error }}</small>
+      }
+    </label>
+
+    <label class="field field_wide">
+      <span>Полное имя</span>
+      <input type="text" formControlName="full_name" />
+      @if (getFieldError('full_name'); as error) {
+        <small class="field-error">{{ error }}</small>
+      }
+    </label>
+
+    <label class="field field_wide">
+      <span>Краткое имя</span>
+      <input type="text" formControlName="short_name" />
+      @if (getFieldError('short_name'); as error) {
+        <small class="field-error">{{ error }}</small>
+      }
+    </label>
+
+    <label class="field">
+      <span>Телефон</span>
+      <input type="text" formControlName="phone" />
+      @if (getFieldError('phone'); as error) {
+        <small class="field-error">{{ error }}</small>
+      }
+    </label>
+
+    <label class="field">
+      <span>Email</span>
+      <input type="email" formControlName="email" />
+      @if (getFieldError('email'); as error) {
+        <small class="field-error">{{ error }}</small>
+      }
+    </label>
+
+    <label class="field">
+      <span>ИНН</span>
+      <input type="text" formControlName="tax_number" />
+      @if (getFieldError('tax_number'); as error) {
+        <small class="field-error">{{ error }}</small>
+      }
+    </label>
+
+    <label class="field">
+      <span>Номер документа</span>
+      <input type="text" formControlName="document_number" />
+      @if (getFieldError('document_number'); as error) {
+        <small class="field-error">{{ error }}</small>
+      }
+    </label>
+
+    <label class="field field_wide">
+      <span>Адрес</span>
+      <textarea rows="3" formControlName="address"></textarea>
+      @if (getFieldError('address'); as error) {
+        <small class="field-error">{{ error }}</small>
+      }
+    </label>
+
+    <label class="field field_wide">
+      <span>Примечание</span>
+      <textarea rows="4" formControlName="notes"></textarea>
+      @if (getFieldError('notes'); as error) {
+        <small class="field-error">{{ error }}</small>
+      }
+    </label>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="submit-button">{{ submitLabel() }}</button>
+    <a [routerLink]="cancelLink()" class="cancel-link">Отмена</a>
+  </div>
+</form>

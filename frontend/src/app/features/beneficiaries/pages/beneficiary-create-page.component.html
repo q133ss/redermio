@@ -1,5 +1,21 @@
-<section class="beneficiary-create-page">
-  <h1>Добавление благополучателя</h1>
-  <p>Страница создания подготовлена как точка перехода. Следующим шагом здесь будет форма добавления.</p>
-  <a routerLink="/beneficiaries" class="back-link">Вернуться к списку</a>
+<section class="beneficiary-page">
+  <header class="page-header">
+    <div>
+      <h1>Добавление благополучателя</h1>
+      <p>Заполните карточку и сохраните запись.</p>
+    </div>
+    <a routerLink="/beneficiaries" class="back-link">К списку</a>
+  </header>
+
+  @if (errorMessage(); as errorMessage) {
+    <p class="page-error">{{ errorMessage }}</p>
+  }
+
+  <app-beneficiary-form
+    [isSaving]="isSaving()"
+    [fieldErrors]="fieldErrors()"
+    [submitLabel]="'Сохранить'"
+    [cancelLink]="'/beneficiaries'"
+    (formSubmitted)="save($event)"
+  ></app-beneficiary-form>
 </section>

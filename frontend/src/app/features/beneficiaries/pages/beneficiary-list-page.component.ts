@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -20,6 +21,7 @@ export class BeneficiaryListPageComponent {
 
   protected readonly beneficiaries = signal<BeneficiaryListItem[]>([]);
   protected readonly isLoading = signal(true);
+  protected readonly deletingId = signal<number | null>(null);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly currentFilters = signal<BeneficiaryListQuery>({
     search: '',
@@ -71,8 +73,37 @@ export class BeneficiaryListPageComponent {
     return beneficiary.id;
   }
 
+  protected isDeleting(id: number): boolean {
+    return this.deletingId() === id;
+  }
+
   protected getTypeLabel(type: BeneficiaryListItem['type']): string {
     return type === 'individual' ? 'Физическое лицо' : 'Юридическое лицо';
+  }
+
+  protected deleteBeneficiary(beneficiary: BeneficiaryListItem): void {
+    if (this.deletingId() !== null || !window.confirm(`Удалить благополучателя "${beneficiary.full_name}"?`)) {
+      return;
+    }
+
+    this.deletingId.set(beneficiary.id);
+    this.errorMessage.set(null);
+
+    this.beneficiariesApiService.delete(beneficiary.id).subscribe({
+      next: () => {
+        const fallbackPage = this.beneficiaries().length === 1 && this.meta().page > 1 ? this.meta().page - 1 : this.meta().page;
+
+        this.deletingId.set(null);
+        this.loadBeneficiaries({
+          ...this.currentFilters(),
+          page: fallbackPage,
+        });
+      },
+      error: (_error: HttpErrorResponse) => {
+        this.errorMessage.set('Не удалось удалить благополучателя.');
+        this.deletingId.set(null);
+      },
+    });
   }
 
   private loadBeneficiaries(filters: BeneficiaryListQuery = this.currentFilters()): void {

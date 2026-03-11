@@ -40,7 +40,7 @@
 .beneficiaries-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 720px;
+  min-width: 820px;
 }
 
 .beneficiaries-table th,
@@ -60,20 +60,15 @@
   border-bottom: none;
 }
 
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .state-message,
 .table-meta {
   margin: 0;
-  color: #4b5563;
-}
-
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-}
-
-.pagination-info {
   color: #4b5563;
 }
 
@@ -95,6 +90,17 @@
 
 .state-box p {
   margin: 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination-info {
+  color: #4b5563;
 }
 
 .refresh-button {
@@ -133,6 +139,29 @@
   cursor: default;
 }
 
+.row-link {
+  color: #111827;
+}
+
+.row-delete-button {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #b91c1c;
+  padding: 8px 10px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.row-delete-button:hover:not(:disabled) {
+  background-color: #fef2f2;
+}
+
+.row-delete-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 @media (max-width: 768px) {
   .page-header,
   .state-box {
@@ -141,7 +170,8 @@
   }
 
   .header-actions,
-  .pagination {
+  .pagination,
+  .actions-cell {
     flex-direction: column;
     align-items: stretch;
   }
