@@ -2,7 +2,7 @@
   <header class="page-header">
     <div>
       <h1>Редактирование благополучателя</h1>
-      <p>Измените данные карточки и сохраните результат.</p>
+      <p>Измените данные карточки и при необходимости назначьте услуги.</p>
     </div>
     <a routerLink="/beneficiaries" class="back-link">К списку</a>
   </header>
@@ -18,17 +18,21 @@
   @if (isLoading()) {
     <p class="page-muted">Загрузка карточки...</p>
   } @else if (beneficiary(); as beneficiary) {
-    <app-beneficiary-form
-      [initialValue]="beneficiary"
-      [isSaving]="isSaving()"
-      [fieldErrors]="fieldErrors()"
-      [submitLabel]="'Сохранить изменения'"
-      [cancelLink]="'/beneficiaries'"
-      (formSubmitted)="save($event)"
-    ></app-beneficiary-form>
+    <div class="page-content">
+      <app-beneficiary-form
+        [initialValue]="beneficiary"
+        [isSaving]="isSaving()"
+        [fieldErrors]="fieldErrors()"
+        [submitLabel]="'Сохранить изменения'"
+        [cancelLink]="'/beneficiaries'"
+        (formSubmitted)="save($event)"
+      ></app-beneficiary-form>
 
-    <button type="button" class="delete-button" (click)="deleteBeneficiary()" [disabled]="isDeleting()">
-      {{ isDeleting() ? 'Удаление...' : 'Удалить благополучателя' }}
-    </button>
+      <app-beneficiary-services-block [beneficiaryId]="beneficiaryId"></app-beneficiary-services-block>
+
+      <button type="button" class="delete-button" (click)="deleteBeneficiary()" [disabled]="isDeleting()">
+        {{ isDeleting() ? 'Удаление...' : 'Удалить благополучателя' }}
+      </button>
+    </div>
   }
 </section>

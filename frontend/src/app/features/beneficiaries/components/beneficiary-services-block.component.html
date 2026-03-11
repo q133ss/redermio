@@ -1,0 +1,121 @@
+<section class="services-block">
+  <header class="services-block__header">
+    <div>
+      <h2>Услуги благополучателя</h2>
+      <p>Назначьте одну или несколько услуг и отслеживайте уже созданные привязки.</p>
+    </div>
+  </header>
+
+  @if (errorMessage(); as errorMessage) {
+    <p class="state-box state-box_error">{{ errorMessage }}</p>
+  }
+
+  @if (successMessage(); as successMessage) {
+    <p class="state-box state-box_success">{{ successMessage }}</p>
+  }
+
+  @if (isLoading()) {
+    <p class="state-muted">Загрузка услуг...</p>
+  } @else {
+    <div class="services-block__grid">
+      <form class="assignment-form" [formGroup]="form" (ngSubmit)="submit()">
+        <label class="field">
+          <span>Поиск услуги</span>
+          <input type="text" [value]="serviceSearch()" (input)="setServiceSearch($any($event.target).value)" placeholder="Название или описание" />
+        </label>
+
+        <div class="field">
+          <span>Доступные услуги</span>
+
+          @if (filteredServices().length === 0) {
+            <p class="state-muted">Подходящих услуг не найдено.</p>
+          } @else {
+            <div class="services-picker">
+              @for (service of filteredServices(); track trackServiceById($index, service)) {
+                <label class="service-option">
+                  <input
+                    type="checkbox"
+                    [checked]="isSelected(service.id)"
+                    (change)="toggleServiceSelection(service.id, $any($event.target).checked)"
+                  />
+                  <span>
+                    <strong>{{ service.name }}</strong>
+                    @if (service.description) {
+                      <small>{{ service.description }}</small>
+                    }
+                  </span>
+                </label>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="assignment-form__meta">
+          <label class="field">
+            <span>Дата оказания</span>
+            <input type="date" formControlName="provided_at" />
+          </label>
+
+          <label class="field">
+            <span>Комментарий</span>
+            <textarea rows="3" formControlName="comment" placeholder="Необязательно"></textarea>
+          </label>
+        </div>
+
+        @if (formErrors().length > 0) {
+          <div class="state-box state-box_error">
+            <ul class="error-list">
+              @for (error of formErrors(); track error) {
+                <li>{{ error }}</li>
+              }
+            </ul>
+          </div>
+        }
+
+        <button type="submit" class="submit-button" [disabled]="isSaving()">
+          {{ isSaving() ? 'Назначение...' : 'Назначить выбранные услуги' }}
+        </button>
+      </form>
+
+      <div class="assignments-list">
+        <h3>Уже назначенные услуги</h3>
+
+        @if (assignments().length === 0) {
+          <p class="state-muted">У этого благополучателя пока нет назначенных услуг.</p>
+        } @else {
+          <div class="assignments-table-wrapper">
+            <table class="assignments-table">
+              <thead>
+                <tr>
+                  <th>Услуга</th>
+                  <th>Дата</th>
+                  <th>Комментарий</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (assignment of assignments(); track trackAssignmentById($index, assignment)) {
+                  <tr>
+                    <td>{{ assignment.service.name }}</td>
+                    <td>{{ assignment.provided_at }}</td>
+                    <td>{{ assignment.comment || '—' }}</td>
+                    <td>
+                      <button
+                        type="button"
+                        class="delete-link"
+                        (click)="deleteAssignment(assignment)"
+                        [disabled]="isDeletingAssignment(assignment.id)"
+                      >
+                        {{ isDeletingAssignment(assignment.id) ? 'Удаление...' : 'Удалить привязку' }}
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</section>

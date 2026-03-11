@@ -4,12 +4,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { BeneficiaryFormComponent } from '../components/beneficiary-form.component';
+import { BeneficiaryServicesBlockComponent } from '../components/beneficiary-services-block.component';
 import { BeneficiariesApiService } from '../data-access/beneficiaries-api.service';
 import { ApiValidationErrorResponse, BeneficiaryPayload } from '../models/beneficiary.models';
 
 @Component({
   selector: 'app-beneficiary-edit-page',
-  imports: [RouterLink, BeneficiaryFormComponent],
+  imports: [RouterLink, BeneficiaryFormComponent, BeneficiaryServicesBlockComponent],
   templateUrl: './beneficiary-edit-page.component.html',
   styleUrl: './beneficiary-edit-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,7 +20,7 @@ export class BeneficiaryEditPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly beneficiariesApiService = inject(BeneficiariesApiService);
-  private readonly beneficiaryId = Number(this.route.snapshot.paramMap.get('id'));
+  protected readonly beneficiaryId = Number(this.route.snapshot.paramMap.get('id'));
 
   protected readonly beneficiary = signal<BeneficiaryPayload | null>(null);
   protected readonly isLoading = signal(true);

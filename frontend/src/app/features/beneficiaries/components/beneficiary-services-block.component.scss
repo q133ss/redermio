@@ -1,0 +1,142 @@
+.services-block {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+.services-block__header h2,
+.services-block__header p,
+.assignments-list h3,
+.state-muted {
+  margin: 0;
+}
+
+.services-block__header p,
+.state-muted {
+  color: #4b5563;
+}
+
+.services-block__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.assignment-form,
+.assignments-list,
+.assignment-form__meta,
+.field {
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  color: #374151;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.services-picker {
+  display: grid;
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background-color: #f9fafb;
+}
+
+.service-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.service-option span {
+  display: grid;
+  gap: 4px;
+}
+
+.service-option small {
+  color: #6b7280;
+}
+
+.submit-button,
+.delete-link {
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #111827;
+  background-color: #111827;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.delete-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #b91c1c;
+}
+
+.state-box {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.state-box_error {
+  border: 1px solid #fecaca;
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+.state-box_success {
+  border: 1px solid #bbf7d0;
+  background-color: #f0fdf4;
+  color: #166534;
+}
+
+.error-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.assignments-table-wrapper {
+  overflow-x: auto;
+}
+
+.assignments-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.assignments-table th,
+.assignments-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: top;
+}
+
+@media (max-width: 900px) {
+  .services-block__grid {
+    grid-template-columns: 1fr;
+  }
+}
