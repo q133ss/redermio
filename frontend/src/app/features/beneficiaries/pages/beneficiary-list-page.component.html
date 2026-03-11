@@ -17,6 +17,43 @@
     (filtersApplied)="applyFilters($event)"
   ></app-beneficiary-filters>
 
+  <section class="registry-actions">
+    <a [href]="getExportUrl()" class="action-link">Экспортировать в Excel</a>
+    <a [href]="getImportTemplateUrl()" class="action-link">Скачать шаблон импорта</a>
+    <label class="import-label">
+      <input type="file" accept=".xlsx" (change)="importFile($event)" [disabled]="isImporting()" />
+      <span>{{ isImporting() ? 'Импорт...' : 'Импортировать Excel' }}</span>
+    </label>
+  </section>
+
+  @if (importMessage(); as importMessage) {
+    <section class="import-result" [class.import-result_error]="importErrorRows().length > 0">
+      <p>{{ importMessage }}</p>
+
+      @if (importSummary(); as summary) {
+        <p class="import-summary">
+          Обработано: {{ summary.processed_rows }}. Валидных: {{ summary.valid_rows }}. Ошибочных:
+          {{ summary.invalid_rows }}. Пустых строк: {{ summary.skipped_empty_rows }}.
+        </p>
+      }
+
+      @if (importErrorRows().length > 0) {
+        <div class="import-errors">
+          @for (errorRow of importErrorRows(); track errorRow.row) {
+            <div class="import-error-row">
+              <strong>Строка {{ errorRow.row }}</strong>
+              <ul>
+                @for (error of errorRow.errors | keyvalue; track error.key) {
+                  <li>{{ error.value }}</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
+
   @if (isLoading()) {
     <p class="state-message">Загрузка списка...</p>
   } @else if (errorMessage(); as errorMessage) {

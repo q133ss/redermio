@@ -66,3 +66,28 @@ export interface ApiValidationErrorResponse {
 export interface ApiMessageResponse {
   message: string;
 }
+
+export interface ImportSummary {
+  processed_rows: number;
+  valid_rows: number;
+  invalid_rows: number;
+  skipped_empty_rows: number;
+}
+
+export interface ImportErrorRow {
+  row: number;
+  errors: Record<string, string>;
+}
+
+export interface BeneficiaryImportSuccessResponse {
+  message: string;
+  imported_count: number;
+  summary: ImportSummary;
+}
+
+export interface BeneficiaryImportErrorResponse {
+  message: string;
+  errors?: Record<string, string>;
+  summary?: ImportSummary;
+  error_rows?: ImportErrorRow[];
+}

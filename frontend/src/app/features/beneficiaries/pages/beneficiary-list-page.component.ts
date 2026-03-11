@@ -6,7 +6,14 @@ import { RouterLink } from '@angular/router';
 
 import { BeneficiariesApiService } from '../data-access/beneficiaries-api.service';
 import { BeneficiaryFiltersComponent } from '../components/beneficiary-filters.component';
-import { BeneficiaryListItem, BeneficiaryListQuery, PaginationMeta } from '../models/beneficiary.models';
+import {
+  BeneficiaryImportErrorResponse,
+  BeneficiaryListItem,
+  BeneficiaryListQuery,
+  ImportErrorRow,
+  ImportSummary,
+  PaginationMeta,
+} from '../models/beneficiary.models';
 
 @Component({
   selector: 'app-beneficiary-list-page',
@@ -21,8 +28,12 @@ export class BeneficiaryListPageComponent {
 
   protected readonly beneficiaries = signal<BeneficiaryListItem[]>([]);
   protected readonly isLoading = signal(true);
+  protected readonly isImporting = signal(false);
   protected readonly deletingId = signal<number | null>(null);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly importMessage = signal<string | null>(null);
+  protected readonly importSummary = signal<ImportSummary | null>(null);
+  protected readonly importErrorRows = signal<ImportErrorRow[]>([]);
   protected readonly currentFilters = signal<BeneficiaryListQuery>({
     search: '',
     type: '',
@@ -46,6 +57,14 @@ export class BeneficiaryListPageComponent {
 
   protected applyFilters(filters: BeneficiaryListQuery): void {
     this.loadBeneficiaries(filters);
+  }
+
+  protected getExportUrl(): string {
+    return this.beneficiariesApiService.getExportUrl(this.currentFilters());
+  }
+
+  protected getImportTemplateUrl(): string {
+    return this.beneficiariesApiService.getImportTemplateUrl();
   }
 
   protected goToPage(page: number): void {
@@ -106,6 +125,39 @@ export class BeneficiaryListPageComponent {
     });
   }
 
+  protected importFile(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.isImporting.set(true);
+    this.importMessage.set(null);
+    this.importSummary.set(null);
+    this.importErrorRows.set([]);
+
+    this.beneficiariesApiService.uploadImportFile(file).subscribe({
+      next: (response) => {
+        this.importMessage.set(response.message);
+        this.importSummary.set(response.summary);
+        this.importErrorRows.set([]);
+        this.isImporting.set(false);
+        target.value = '';
+        this.loadBeneficiaries({
+          ...this.currentFilters(),
+          page: 1,
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.applyImportError(error);
+        this.isImporting.set(false);
+        target.value = '';
+      },
+    });
+  }
+
   private loadBeneficiaries(filters: BeneficiaryListQuery = this.currentFilters()): void {
     this.isLoading.set(true);
     this.errorMessage.set(null);
@@ -131,5 +183,19 @@ export class BeneficiaryListPageComponent {
           this.isLoading.set(false);
         },
       });
+  }
+
+  private applyImportError(error: HttpErrorResponse): void {
+    if (error.status === 422 && error.error) {
+      const response = error.error as BeneficiaryImportErrorResponse;
+      this.importMessage.set(response.message ?? 'Не удалось импортировать файл.');
+      this.importSummary.set(response.summary ?? null);
+      this.importErrorRows.set(response.error_rows ?? []);
+      return;
+    }
+
+    this.importMessage.set('Не удалось импортировать файл.');
+    this.importSummary.set(null);
+    this.importErrorRows.set([]);
   }
 }

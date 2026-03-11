@@ -37,6 +37,34 @@
   background-color: #ffffff;
 }
 
+.registry-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.action-link,
+.import-label {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #111827;
+  padding: 10px 14px;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.action-link:hover,
+.import-label:hover {
+  background-color: #f3f4f6;
+}
+
+.import-label input {
+  display: none;
+}
+
 .beneficiaries-table {
   width: 100%;
   border-collapse: collapse;
@@ -70,6 +98,42 @@
 .table-meta {
   margin: 0;
   color: #4b5563;
+}
+
+.import-result {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background-color: #f0fdf4;
+  color: #166534;
+}
+
+.import-result_error {
+  border-color: #fecaca;
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+.import-result p,
+.import-summary {
+  margin: 0;
+}
+
+.import-errors {
+  display: grid;
+  gap: 8px;
+}
+
+.import-error-row strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.import-error-row ul {
+  margin: 0;
+  padding-left: 18px;
 }
 
 .state-box {
@@ -171,7 +235,8 @@
 
   .header-actions,
   .pagination,
-  .actions-cell {
+  .actions-cell,
+  .registry-actions {
     flex-direction: column;
     align-items: stretch;
   }

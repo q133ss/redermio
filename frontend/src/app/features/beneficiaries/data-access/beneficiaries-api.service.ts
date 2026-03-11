@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../../../core/config/runtime-config';
 import {
   ApiMessageResponse,
+  BeneficiaryImportSuccessResponse,
   BeneficiaryListQuery,
   BeneficiaryListResponse,
   BeneficiaryPayload,
@@ -51,5 +52,30 @@ export class BeneficiariesApiService {
 
   public delete(id: number): Observable<ApiMessageResponse> {
     return this.httpClient.delete<ApiMessageResponse>(`${this.apiBaseUrl}/beneficiaries/${id}`);
+  }
+
+  public uploadImportFile(file: File): Observable<BeneficiaryImportSuccessResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.httpClient.post<BeneficiaryImportSuccessResponse>(`${this.apiBaseUrl}/beneficiaries/import`, formData);
+  }
+
+  public getExportUrl(filters: BeneficiaryListQuery): string {
+    const url = new URL(`${this.apiBaseUrl}/beneficiaries/export`);
+
+    if (filters.search !== '') {
+      url.searchParams.set('search', filters.search);
+    }
+
+    if (filters.type !== '') {
+      url.searchParams.set('type', filters.type);
+    }
+
+    return url.toString();
+  }
+
+  public getImportTemplateUrl(): string {
+    return `${this.apiBaseUrl}/beneficiaries/import-template`;
   }
 }
