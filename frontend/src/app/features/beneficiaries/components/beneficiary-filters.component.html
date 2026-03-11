@@ -1,0 +1,24 @@
+<form class="filters-form" [formGroup]="form" (ngSubmit)="submit()">
+  <label class="field">
+    <span>Поиск</span>
+    <input
+      type="text"
+      formControlName="search"
+      placeholder="Имя, телефон, email, ИНН, документ"
+    />
+  </label>
+
+  <label class="field">
+    <span>Тип</span>
+    <select formControlName="type">
+      <option value="">Все</option>
+      <option value="individual">Физическое лицо</option>
+      <option value="legal_entity">Юридическое лицо</option>
+    </select>
+  </label>
+
+  <div class="actions">
+    <button type="submit" class="submit-button" [disabled]="isLoading()">Найти</button>
+    <button type="button" class="reset-button" (click)="reset()" [disabled]="isLoading()">Сбросить</button>
+  </div>
+</form>

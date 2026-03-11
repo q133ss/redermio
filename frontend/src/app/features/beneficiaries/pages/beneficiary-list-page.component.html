@@ -8,6 +8,12 @@
     <button type="button" class="refresh-button" (click)="reload()">Обновить</button>
   </header>
 
+  <app-beneficiary-filters
+    [currentFilters]="currentFilters()"
+    [isLoading]="isLoading()"
+    (filtersApplied)="applyFilters($event)"
+  ></app-beneficiary-filters>
+
   @if (isLoading()) {
     <p class="state-message">Загрузка списка...</p>
   } @else if (errorMessage(); as errorMessage) {

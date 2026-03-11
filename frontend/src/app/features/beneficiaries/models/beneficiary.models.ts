@@ -25,6 +25,11 @@ export interface BeneficiaryFilters {
   type: string | null;
 }
 
+export interface BeneficiaryListQuery {
+  search: string;
+  type: '' | 'individual' | 'legal_entity';
+}
+
 export interface BeneficiaryListResponse {
   data: BeneficiaryListItem[];
   meta: PaginationMeta;
