@@ -28,6 +28,8 @@ export interface BeneficiaryFilters {
 export interface BeneficiaryListQuery {
   search: string;
   type: '' | 'individual' | 'legal_entity';
+  page: number;
+  per_page: number;
 }
 
 export interface BeneficiaryListResponse {

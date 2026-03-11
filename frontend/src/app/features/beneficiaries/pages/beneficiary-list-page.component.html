@@ -5,7 +5,10 @@
       <p>Всего записей: {{ meta().total }}</p>
     </div>
 
-    <button type="button" class="refresh-button" (click)="reload()">Обновить</button>
+    <div class="header-actions">
+      <a routerLink="/beneficiaries/create" class="create-link">Добавить благополучателя</a>
+      <button type="button" class="refresh-button" (click)="reload()">Обновить</button>
+    </div>
   </header>
 
   <app-beneficiary-filters
@@ -55,5 +58,15 @@
       Страница {{ meta().page }} из {{ meta().last_page }}. Показано {{ beneficiaries().length }} из
       {{ meta().total }} записей.
     </p>
+
+    <div class="pagination">
+      <button type="button" class="pagination-button" (click)="goToPage(meta().page - 1)" [disabled]="!hasPreviousPage()">
+        Назад
+      </button>
+      <span class="pagination-info">Страница {{ meta().page }} из {{ meta().last_page }}</span>
+      <button type="button" class="pagination-button" (click)="goToPage(meta().page + 1)" [disabled]="!hasNextPage()">
+        Вперёд
+      </button>
+    </div>
   }
 </section>

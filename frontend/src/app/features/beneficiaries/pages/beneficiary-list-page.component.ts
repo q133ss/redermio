@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 
 import { BeneficiariesApiService } from '../data-access/beneficiaries-api.service';
 import { BeneficiaryFiltersComponent } from '../components/beneficiary-filters.component';
@@ -8,7 +9,7 @@ import { BeneficiaryListItem, BeneficiaryListQuery, PaginationMeta } from '../mo
 
 @Component({
   selector: 'app-beneficiary-list-page',
-  imports: [CommonModule, BeneficiaryFiltersComponent],
+  imports: [CommonModule, RouterLink, BeneficiaryFiltersComponent],
   templateUrl: './beneficiary-list-page.component.html',
   styleUrl: './beneficiary-list-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +24,8 @@ export class BeneficiaryListPageComponent {
   protected readonly currentFilters = signal<BeneficiaryListQuery>({
     search: '',
     type: '',
+    page: 1,
+    per_page: 20,
   });
   protected readonly meta = signal<PaginationMeta>({
     page: 1,
@@ -41,6 +44,27 @@ export class BeneficiaryListPageComponent {
 
   protected applyFilters(filters: BeneficiaryListQuery): void {
     this.loadBeneficiaries(filters);
+  }
+
+  protected goToPage(page: number): void {
+    const meta = this.meta();
+
+    if (page < 1 || page > meta.last_page || page === meta.page) {
+      return;
+    }
+
+    this.loadBeneficiaries({
+      ...this.currentFilters(),
+      page,
+    });
+  }
+
+  protected hasPreviousPage(): boolean {
+    return this.meta().page > 1;
+  }
+
+  protected hasNextPage(): boolean {
+    return this.meta().page < this.meta().last_page;
   }
 
   protected trackById(_: number, beneficiary: BeneficiaryListItem): number {
@@ -66,6 +90,8 @@ export class BeneficiaryListPageComponent {
           this.currentFilters.set({
             search: response.filters.search ?? '',
             type: response.filters.type === 'individual' || response.filters.type === 'legal_entity' ? response.filters.type : '',
+            page: response.meta.page,
+            per_page: response.meta.per_page,
           });
           this.isLoading.set(false);
         },

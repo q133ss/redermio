@@ -13,7 +13,10 @@ export class BeneficiariesApiService {
   private readonly apiBaseUrl = inject(API_BASE_URL);
 
   public getList(filters: BeneficiaryListQuery): Observable<BeneficiaryListResponse> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = {
+      page: String(filters.page),
+      per_page: String(filters.per_page),
+    };
 
     if (filters.search !== '') {
       params['search'] = filters.search;

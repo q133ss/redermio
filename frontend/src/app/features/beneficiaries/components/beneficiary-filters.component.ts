@@ -51,6 +51,8 @@ export class BeneficiaryFiltersComponent {
     this.filtersApplied.emit({
       search: value.search.trim(),
       type: value.type,
+      page: 1,
+      per_page: this.currentFilters().per_page,
     });
   }
 
@@ -58,6 +60,8 @@ export class BeneficiaryFiltersComponent {
     const defaultFilters: BeneficiaryListQuery = {
       search: '',
       type: '',
+      page: 1,
+      per_page: this.currentFilters().per_page,
     };
 
     this.form.reset(defaultFilters);
