@@ -27,7 +27,7 @@
   </section>
 
   @if (importMessage(); as importMessage) {
-    <section class="import-result" [class.import-result_error]="importErrorRows().length > 0">
+    <section class="import-result" [class.import-result_error]="importErrorRows().length > 0 || importErrors().length > 0">
       <p>{{ importMessage }}</p>
 
       @if (importSummary(); as summary) {
@@ -35,6 +35,19 @@
           Обработано: {{ summary.processed_rows }}. Валидных: {{ summary.valid_rows }}. Ошибочных:
           {{ summary.invalid_rows }}. Пустых строк: {{ summary.skipped_empty_rows }}.
         </p>
+      }
+
+      @if (importErrors().length > 0) {
+        <div class="import-errors">
+          <div class="import-error-row">
+            <strong>Детали ошибки</strong>
+            <ul>
+              @for (error of importErrors(); track error) {
+                <li>{{ error }}</li>
+              }
+            </ul>
+          </div>
+        </div>
       }
 
       @if (importErrorRows().length > 0) {

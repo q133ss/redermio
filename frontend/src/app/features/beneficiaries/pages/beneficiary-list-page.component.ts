@@ -33,6 +33,7 @@ export class BeneficiaryListPageComponent {
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly importMessage = signal<string | null>(null);
   protected readonly importSummary = signal<ImportSummary | null>(null);
+  protected readonly importErrors = signal<string[]>([]);
   protected readonly importErrorRows = signal<ImportErrorRow[]>([]);
   protected readonly currentFilters = signal<BeneficiaryListQuery>({
     search: '',
@@ -136,12 +137,14 @@ export class BeneficiaryListPageComponent {
     this.isImporting.set(true);
     this.importMessage.set(null);
     this.importSummary.set(null);
+    this.importErrors.set([]);
     this.importErrorRows.set([]);
 
     this.beneficiariesApiService.uploadImportFile(file).subscribe({
       next: (response) => {
         this.importMessage.set(response.message);
         this.importSummary.set(response.summary);
+        this.importErrors.set([]);
         this.importErrorRows.set([]);
         this.isImporting.set(false);
         target.value = '';
@@ -190,12 +193,14 @@ export class BeneficiaryListPageComponent {
       const response = error.error as BeneficiaryImportErrorResponse;
       this.importMessage.set(response.message ?? 'Не удалось импортировать файл.');
       this.importSummary.set(response.summary ?? null);
+      this.importErrors.set(Object.values(response.errors ?? {}));
       this.importErrorRows.set(response.error_rows ?? []);
       return;
     }
 
     this.importMessage.set('Не удалось импортировать файл.');
     this.importSummary.set(null);
+    this.importErrors.set([]);
     this.importErrorRows.set([]);
   }
 }

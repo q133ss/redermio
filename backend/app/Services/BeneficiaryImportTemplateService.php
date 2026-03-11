@@ -64,9 +64,9 @@ class BeneficiaryImportTemplateService
         $helpSheet->setCellValue('A2', 'Обязательные поля');
         $helpSheet->setCellValue('B2', 'Тип благополучателя, Полное имя');
         $helpSheet->setCellValue('A3', 'Допустимые значения поля "Тип благополучателя"');
-        $helpSheet->setCellValue('B3', 'individual, legal_entity');
+        $helpSheet->setCellValue('B3', 'individual, legal_entity, Физическое лицо, Юридическое лицо');
         $helpSheet->setCellValue('A4', 'Примечание');
-        $helpSheet->setCellValue('B4', 'Первая строка должна содержать только заголовки шаблона.');
+        $helpSheet->setCellValue('B4', 'Первая строка должна содержать только заголовки шаблона. Экспортированный файл тоже можно использовать для обратного импорта.');
 
         foreach (range('A', 'B') as $helpColumn) {
             $helpSheet->getColumnDimension($helpColumn)->setAutoSize(true);

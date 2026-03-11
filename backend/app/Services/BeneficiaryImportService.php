@@ -93,6 +93,8 @@ class BeneficiaryImportService
                 $payload[$field] = is_string($value) ? trim($value) : $value;
             }
 
+            $payload = $this->normalizeImportPayload($payload);
+
             [$validatedData, $errors] = $this->beneficiaryDataValidator->validateForCreate($payload);
 
             if ($errors !== []) {
@@ -179,5 +181,29 @@ class BeneficiaryImportService
             'invalid_rows' => $invalidRows,
             'skipped_empty_rows' => $skippedEmptyRows,
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
+    private function normalizeImportPayload(array $payload): array
+    {
+        if (isset($payload['type']) && is_string($payload['type'])) {
+            $payload['type'] = $this->normalizeTypeValue($payload['type']);
+        }
+
+        return $payload;
+    }
+
+    private function normalizeTypeValue(string $value): string
+    {
+        $normalized = mb_strtolower(trim($value));
+
+        return match ($normalized) {
+            'физическое лицо' => 'individual',
+            'юридическое лицо' => 'legal_entity',
+            default => $normalized,
+        };
     }
 }
