@@ -6,7 +6,7 @@ namespace App\Validation;
 
 use App\Models\ServiceModel;
 
-class ServiceDataValidator
+class ServiceDataValidator extends BaseDataValidator
 {
     public function __construct(
         private readonly ServiceModel $serviceModel = new ServiceModel()
@@ -40,32 +40,24 @@ class ServiceDataValidator
         $errors = [];
         $data = [];
 
-        $name = $payload['name'] ?? null;
+        $name = $this->validateRequiredString(
+            $payload,
+            'name',
+            255,
+            'Название услуги обязательно для заполнения.',
+            'Название услуги не должно быть длиннее 255 символов.',
+            $errors
+        );
 
-        if (! is_string($name)) {
-            $errors['name'] = 'Название услуги обязательно для заполнения.';
-        } else {
-            $name = trim($name);
-
-            if ($name === '') {
-                $errors['name'] = 'Название услуги обязательно для заполнения.';
-            } elseif ($this->stringLength($name) > 255) {
-                $errors['name'] = 'Название услуги не должно быть длиннее 255 символов.';
-            } elseif ($this->serviceNameExists($name, $currentId)) {
+        if ($name !== null) {
+            if ($this->serviceNameExists($name, $currentId)) {
                 $errors['name'] = 'Услуга с таким названием уже существует.';
             } else {
                 $data['name'] = $name;
             }
         }
 
-        $description = $payload['description'] ?? null;
-
-        if ($description !== null && ! is_string($description)) {
-            $errors['description'] = 'Описание услуги должно быть строкой.';
-        } else {
-            $description = is_string($description) ? trim($description) : null;
-            $data['description'] = $description !== '' ? $description : null;
-        }
+        $data['description'] = $this->validateOptionalText($payload, 'description', $errors);
 
         $normalizedIsActive = $this->normalizeBooleanInput($payload['is_active'] ?? true);
 
@@ -89,37 +81,5 @@ class ServiceDataValidator
         }
 
         return $builder->first() !== null;
-    }
-
-    private function normalizeBooleanInput(mixed $value): ?bool
-    {
-        if (is_bool($value)) {
-            return $value;
-        }
-
-        if (is_int($value)) {
-            return match ($value) {
-                1 => true,
-                0 => false,
-                default => null,
-            };
-        }
-
-        if (is_string($value)) {
-            $normalized = mb_strtolower(trim($value));
-
-            return match ($normalized) {
-                '1', 'true' => true,
-                '0', 'false' => false,
-                default => null,
-            };
-        }
-
-        return null;
-    }
-
-    private function stringLength(string $value): int
-    {
-        return function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
     }
 }

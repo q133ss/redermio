@@ -9,6 +9,10 @@ $routes->get('/', 'Home::index');
 
 $routes->group('api', ['namespace' => 'App\Controllers\Api', 'filter' => 'cors'], static function ($routes) {
     $routes->get('health', 'HealthController::index');
+    $routes->resource('beneficiaries', [
+        'controller' => 'BeneficiariesController',
+        'only' => ['index', 'show', 'create', 'update', 'delete'],
+    ]);
     $routes->resource('services', [
         'controller' => 'ServicesController',
         'only' => ['index', 'create', 'update', 'delete'],

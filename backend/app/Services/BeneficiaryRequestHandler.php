@@ -6,10 +6,10 @@ namespace App\Services;
 
 use CodeIgniter\HTTP\RequestInterface;
 
-class ServiceRequestHandler extends BaseRequestHandler
+class BeneficiaryRequestHandler extends BaseRequestHandler
 {
     public function __construct(
-        private readonly ServiceManager $serviceManager = new ServiceManager()
+        private readonly BeneficiaryManager $beneficiaryManager = new BeneficiaryManager()
     ) {
     }
 
@@ -19,7 +19,23 @@ class ServiceRequestHandler extends BaseRequestHandler
      */
     public function list(array $query): array
     {
-        return $this->okResponse($this->serviceManager->getList($query));
+        return $this->okResponse($this->beneficiaryManager->getList($query));
+    }
+
+    /**
+     * @return array{status: int, body: array<string, mixed>}
+     */
+    public function show(int $id): array
+    {
+        $beneficiary = $this->beneficiaryManager->getById($id);
+
+        if ($beneficiary === null) {
+            return $this->notFoundResponse('Благополучатель не найден.');
+        }
+
+        return $this->okResponse([
+            'data' => $beneficiary,
+        ]);
     }
 
     /**
@@ -33,7 +49,7 @@ class ServiceRequestHandler extends BaseRequestHandler
             return $this->invalidJsonResponse();
         }
 
-        $result = $this->serviceManager->create($payload);
+        $result = $this->beneficiaryManager->create($payload);
 
         if (isset($result['errors'])) {
             return $this->validationErrorResponse($result['errors']);
@@ -53,10 +69,10 @@ class ServiceRequestHandler extends BaseRequestHandler
             return $this->invalidJsonResponse();
         }
 
-        $result = $this->serviceManager->update($id, $payload);
+        $result = $this->beneficiaryManager->update($id, $payload);
 
         if (isset($result['not_found'])) {
-            return $this->notFoundResponse('Услуга не найдена.');
+            return $this->notFoundResponse('Благополучатель не найден.');
         }
 
         if (isset($result['errors'])) {
@@ -71,14 +87,14 @@ class ServiceRequestHandler extends BaseRequestHandler
      */
     public function delete(int $id): array
     {
-        $result = $this->serviceManager->delete($id);
+        $result = $this->beneficiaryManager->delete($id);
 
         if (isset($result['not_found'])) {
-            return $this->notFoundResponse('Услуга не найдена.');
+            return $this->notFoundResponse('Благополучатель не найден.');
         }
 
         return $this->okResponse([
-            'message' => 'Услуга удалена.',
+            'message' => 'Благополучатель удалён.',
         ]);
     }
 }
