@@ -18,6 +18,7 @@ frontend/.angular/
 frontend/.cache/
 frontend/coverage/
 frontend/.env
+frontend/public/runtime-config.js
 
 *.log
 *.tmp

@@ -9,7 +9,8 @@ services:
       - ./backend:/var/www/backend
       - backend_writable:/var/www/backend/writable
     environment:
-      CI_ENVIRONMENT: development
+      CI_ENVIRONMENT: "${CI_ENVIRONMENT:-development}"
+      APP_BASE_URL: "${APP_BASE_URL:-http://localhost:8080/}"
     networks:
       - redermio
 
@@ -42,6 +43,7 @@ services:
     environment:
       CHOKIDAR_USEPOLLING: "true"
       NG_CLI_ANALYTICS: "false"
+      FRONTEND_API_URL: "${FRONTEND_API_URL:-http://localhost:8080/api}"
     networks:
       - redermio
 
