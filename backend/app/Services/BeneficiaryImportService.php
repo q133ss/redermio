@@ -68,6 +68,9 @@ class BeneficiaryImportService
 
         $columnMap = array_keys($this->templateService->getColumnMap());
         $itemsToInsert = [];
+        $rowErrors = [];
+        $processedRows = 0;
+        $skippedEmptyRows = 0;
 
         foreach ($rows as $rowNumber => $row) {
             if ($rowNumber === 1) {
@@ -78,9 +81,11 @@ class BeneficiaryImportService
             $values = array_slice($values, 0, count($columnMap));
 
             if ($this->isEmptyRow($values)) {
+                $skippedEmptyRows++;
                 continue;
             }
 
+            $processedRows++;
             $payload = [];
 
             foreach ($columnMap as $index => $field) {
@@ -91,23 +96,35 @@ class BeneficiaryImportService
             [$validatedData, $errors] = $this->beneficiaryDataValidator->validateForCreate($payload);
 
             if ($errors !== []) {
-                $spreadsheet->disconnectWorksheets();
-
-                return [
-                    'errors' => [
-                        'row' => sprintf('Ошибка в строке %d.', $rowNumber),
-                        'fields' => $errors,
-                    ],
+                $rowErrors[] = [
+                    'row' => $rowNumber,
+                    'errors' => $errors,
                 ];
+                continue;
             }
 
             $itemsToInsert[] = $validatedData;
         }
 
         $spreadsheet->disconnectWorksheets();
+        $summary = $this->buildSummary($processedRows, count($itemsToInsert), count($rowErrors), $skippedEmptyRows);
 
         if ($itemsToInsert === []) {
+            if ($rowErrors !== []) {
+                return [
+                    'row_errors' => $rowErrors,
+                    'summary' => $summary,
+                ];
+            }
+
             return ['errors' => ['file' => 'В Excel-файле нет строк для импорта.']];
+        }
+
+        if ($rowErrors !== []) {
+            return [
+                'row_errors' => $rowErrors,
+                'summary' => $summary,
+            ];
         }
 
         $db = db_connect();
@@ -129,6 +146,7 @@ class BeneficiaryImportService
 
         return [
             'imported_count' => count($itemsToInsert),
+            'summary' => $summary,
         ];
     }
 
@@ -148,5 +166,18 @@ class BeneficiaryImportService
         }
 
         return true;
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private function buildSummary(int $processedRows, int $validRows, int $invalidRows, int $skippedEmptyRows): array
+    {
+        return [
+            'processed_rows' => $processedRows,
+            'valid_rows' => $validRows,
+            'invalid_rows' => $invalidRows,
+            'skipped_empty_rows' => $skippedEmptyRows,
+        ];
     }
 }

@@ -49,6 +49,16 @@ class BeneficiariesController extends BaseApiController
     {
         $result = $this->beneficiaryImportService->import($this->request->getFile('file'));
 
+        if (isset($result['row_errors'])) {
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'message' => 'Импорт не выполнен. В файле есть ошибочные строки.',
+                    'summary' => $result['summary'],
+                    'error_rows' => $result['row_errors'],
+                ]);
+        }
+
         if (isset($result['errors'])) {
             return $this->response
                 ->setStatusCode(422)
@@ -63,6 +73,7 @@ class BeneficiariesController extends BaseApiController
             ->setJSON([
                 'message' => 'Импорт благополучателей выполнен.',
                 'imported_count' => $result['imported_count'],
+                'summary' => $result['summary'],
             ]);
     }
 
