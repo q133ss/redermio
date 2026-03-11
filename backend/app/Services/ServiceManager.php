@@ -133,7 +133,23 @@ class ServiceManager
             return ['not_found' => true];
         }
 
-        $this->serviceModel->delete($id);
+        $timestamp = date('Y-m-d H:i:s');
+        $updated = $this->serviceModel
+            ->builder()
+            ->where('id', $id)
+            ->where('deleted_at', null)
+            ->update([
+                'deleted_at' => $timestamp,
+                'updated_at' => $timestamp,
+            ]);
+
+        if ($updated === false) {
+            return [
+                'errors' => [
+                    'service' => 'Не удалось удалить услугу.',
+                ],
+            ];
+        }
 
         return ['deleted' => true];
     }

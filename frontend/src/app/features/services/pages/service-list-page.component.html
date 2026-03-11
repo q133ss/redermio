@@ -1,0 +1,130 @@
+<section class="service-page">
+  <header class="page-header">
+    <div>
+      <h1>Справочник услуг</h1>
+      <p>Всего записей: {{ meta().total }}</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="primary-button" (click)="startCreate()">Добавить услугу</button>
+      <button type="button" class="secondary-button" (click)="reload()">Обновить</button>
+    </div>
+  </header>
+
+  <section class="content-grid">
+    <div class="panel">
+      <form class="filters" (ngSubmit)="submitFilters()">
+        <label class="filter-field">
+          <span>Поиск</span>
+          <input
+            type="text"
+            name="search"
+            [(ngModel)]="searchValue"
+            [disabled]="isLoading()"
+            placeholder="Название или описание"
+          />
+        </label>
+
+        <label class="filter-field">
+          <span>Статус</span>
+          <select name="is_active" [(ngModel)]="statusValue" [disabled]="isLoading()">
+            <option value="">Все</option>
+            <option value="true">Активные</option>
+            <option value="false">Неактивные</option>
+          </select>
+        </label>
+
+        <div class="filter-actions">
+          <button type="submit" class="primary-button" [disabled]="isLoading()">Найти</button>
+          <button type="button" class="secondary-button" (click)="resetFilters()" [disabled]="isLoading()">Сбросить</button>
+        </div>
+      </form>
+
+      @if (successMessage(); as successMessage) {
+        <div class="state-box state-box_success">
+          <p>{{ successMessage }}</p>
+        </div>
+      }
+
+      @if (isLoading()) {
+        <p class="state-message">Загрузка списка...</p>
+      } @else if (errorMessage(); as errorMessage) {
+        <div class="state-box state-box_error">
+          <p>{{ errorMessage }}</p>
+          <button type="button" class="secondary-button" (click)="reload()">Повторить</button>
+        </div>
+      } @else if (services().length === 0) {
+        <p class="state-message">Список услуг пока пуст.</p>
+      } @else {
+        <div class="table-wrapper">
+          <table class="services-table">
+            <thead>
+              <tr>
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Статус</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (service of services(); track trackById($index, service)) {
+                <tr>
+                  <td>{{ service.name }}</td>
+                  <td>{{ service.description || '—' }}</td>
+                  <td>
+                    <span class="status-badge" [class.status-badge_inactive]="!service.is_active">
+                      {{ getStatusLabel(service.is_active) }}
+                    </span>
+                  </td>
+                  <td class="actions-cell">
+                    <button type="button" class="row-link" (click)="startEdit(service)">Редактировать</button>
+                    <button
+                      type="button"
+                      class="row-delete-button"
+                      (click)="deleteService(service)"
+                      [disabled]="isDeleting(service.id)"
+                    >
+                      {{ isDeleting(service.id) ? 'Удаление...' : 'Удалить' }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <p class="table-meta">
+          Страница {{ meta().page }} из {{ meta().last_page }}. Показано {{ services().length }} из {{ meta().total }} записей.
+        </p>
+
+        <div class="pagination">
+          <button type="button" class="secondary-button" (click)="goToPage(meta().page - 1)" [disabled]="!hasPreviousPage()">
+            Назад
+          </button>
+          <span class="pagination-info">Страница {{ meta().page }} из {{ meta().last_page }}</span>
+          <button type="button" class="secondary-button" (click)="goToPage(meta().page + 1)" [disabled]="!hasNextPage()">
+            Вперёд
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="panel">
+      <header class="form-header">
+        <h2>{{ getFormTitle() }}</h2>
+        @if (formMode() === 'edit' && editingService(); as editingService) {
+          <p>ID услуги: {{ editingService.id }}</p>
+        }
+      </header>
+
+      <app-service-form
+        [initialValue]="formInitialValue()"
+        [fieldErrors]="fieldErrors()"
+        [isSaving]="isSaving()"
+        [submitLabel]="getSubmitLabel()"
+        (formSubmitted)="saveService($event)"
+        (canceled)="cancelForm()"
+      ></app-service-form>
+    </div>
+  </section>
+</section>

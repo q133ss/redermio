@@ -8,3 +8,31 @@
   margin: 0 auto;
   padding: 24px 16px 40px;
 }
+
+.app-nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.app-nav__link {
+  display: inline-flex;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #111827;
+  text-decoration: none;
+}
+
+.app-nav__link_active {
+  border-color: #111827;
+  background-color: #111827;
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .app-nav {
+    flex-direction: column;
+  }
+}

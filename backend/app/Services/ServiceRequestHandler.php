@@ -77,6 +77,10 @@ class ServiceRequestHandler extends BaseRequestHandler
             return $this->notFoundResponse('Услуга не найдена.');
         }
 
+        if (isset($result['errors'])) {
+            return $this->validationErrorResponse($result['errors']);
+        }
+
         return $this->okResponse([
             'message' => 'Услуга удалена.',
         ]);
