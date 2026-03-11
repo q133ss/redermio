@@ -9,6 +9,8 @@ $routes->get('/', 'Home::index');
 
 $routes->group('api', ['namespace' => 'App\Controllers\Api', 'filter' => 'cors'], static function ($routes) {
     $routes->get('health', 'HealthController::index');
+    $routes->get('beneficiaries/import-template', 'BeneficiariesController::importTemplate');
+    $routes->post('beneficiaries/import', 'BeneficiariesController::import');
     $routes->get('beneficiaries/export', 'BeneficiariesController::export');
     $routes->get('beneficiaries/(:num)/services', 'BeneficiaryServicesController::index/$1');
     $routes->post('beneficiaries/(:num)/services', 'BeneficiaryServicesController::create/$1');
