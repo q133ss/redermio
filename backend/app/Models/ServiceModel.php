@@ -33,20 +33,6 @@ class ServiceModel extends Model
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
-    protected $validationRules = [
-        'name' => 'required|string|max_length[255]|is_unique[services.name,id,{id}]',
-        'description' => 'permit_empty',
-        'is_active' => 'permit_empty',
-    ];
-    protected $validationMessages = [
-        'name' => [
-            'required' => 'Название услуги обязательно для заполнения.',
-            'max_length' => 'Название услуги не должно быть длиннее 255 символов.',
-            'is_unique' => 'Услуга с таким названием уже существует.',
-        ],
-    ];
-    protected $skipValidation = false;
-    protected $cleanValidationRules = true;
     protected $allowCallbacks = true;
     protected $beforeInsert   = ['normalizeServiceData'];
     protected $beforeUpdate   = ['normalizeServiceData'];

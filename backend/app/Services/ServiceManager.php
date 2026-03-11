@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\ServiceModel;
+use App\Validation\ServiceDataValidator;
 use CodeIgniter\Database\BaseBuilder;
 
 class ServiceManager
@@ -12,7 +13,8 @@ class ServiceManager
     private const MAX_PAGE_SIZE = 100;
 
     public function __construct(
-        private readonly ServiceModel $serviceModel = new ServiceModel()
+        private readonly ServiceModel $serviceModel = new ServiceModel(),
+        private readonly ServiceDataValidator $serviceDataValidator = new ServiceDataValidator()
     ) {
     }
 
@@ -68,6 +70,72 @@ class ServiceManager
                 'is_active' => $isActive,
             ],
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return array<string, mixed>
+     */
+    public function create(array $payload): array
+    {
+        [$data, $errors] = $this->serviceDataValidator->validateForCreate($payload);
+
+        if ($errors !== []) {
+            return ['errors' => $errors];
+        }
+
+        if (! $this->serviceModel->insert($data)) {
+            return ['errors' => $this->serviceModel->errors()];
+        }
+
+        return [
+            'data' => $this->getServiceById((int) $this->serviceModel->getInsertID()),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return array<string, mixed>
+     */
+    public function update(int $id, array $payload): array
+    {
+        $service = $this->serviceModel->find($id);
+
+        if ($service === null) {
+            return ['not_found' => true];
+        }
+
+        [$data, $errors] = $this->serviceDataValidator->validateForUpdate($payload, $id);
+
+        if ($errors !== []) {
+            return ['errors' => $errors];
+        }
+
+        if (! $this->serviceModel->update($id, $data)) {
+            return ['errors' => $this->serviceModel->errors()];
+        }
+
+        return [
+            'data' => $this->getServiceById($id),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function delete(int $id): array
+    {
+        $service = $this->serviceModel->find($id);
+
+        if ($service === null) {
+            return ['not_found' => true];
+        }
+
+        $this->serviceModel->delete($id);
+
+        return ['deleted' => true];
     }
 
     private function createBaseBuilder(): BaseBuilder
@@ -138,4 +206,19 @@ class ServiceManager
 
         return $service;
     }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function getServiceById(int $id): ?array
+    {
+        $service = $this->serviceModel->find($id);
+
+        if ($service === null) {
+            return null;
+        }
+
+        return $this->mapServiceRow($service);
+    }
+
 }
