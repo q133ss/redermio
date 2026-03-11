@@ -16,7 +16,7 @@ class ServiceModel extends Model
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
     protected $useAutoIncrement = true;
-    protected $casts            = [
+    protected array $casts      = [
         'id' => 'integer',
         'is_active' => 'boolean',
     ];
