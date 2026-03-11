@@ -77,15 +77,17 @@
                     </span>
                   </td>
                   <td class="actions-cell">
-                    <button type="button" class="row-link" (click)="startEdit(service)">Редактировать</button>
-                    <button
-                      type="button"
-                      class="row-delete-button"
-                      (click)="deleteService(service)"
-                      [disabled]="isDeleting(service.id)"
-                    >
-                      {{ isDeleting(service.id) ? 'Удаление...' : 'Удалить' }}
-                    </button>
+                    <div class="table-actions">
+                      <button type="button" class="row-link" (click)="startEdit(service)">Редактировать</button>
+                      <button
+                        type="button"
+                        class="row-delete-button"
+                        (click)="deleteService(service)"
+                        [disabled]="isDeleting(service.id)"
+                      >
+                        {{ isDeleting(service.id) ? 'Удаление...' : 'Удалить' }}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               }

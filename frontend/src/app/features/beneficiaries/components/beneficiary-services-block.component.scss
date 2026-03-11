@@ -151,8 +151,28 @@
   vertical-align: top;
 }
 
+.actions-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.table-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.delete-link {
+  white-space: nowrap;
+}
+
 @media (max-width: 900px) {
   .services-block__grid {
     grid-template-columns: 1fr;
+  }
+
+  .table-actions {
+    white-space: normal;
   }
 }

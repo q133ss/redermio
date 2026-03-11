@@ -100,15 +100,17 @@
               <td>{{ beneficiary.tax_number || '—' }}</td>
               <td>{{ beneficiary.document_number || '—' }}</td>
               <td class="actions-cell">
-                <a [routerLink]="['/beneficiaries', beneficiary.id, 'edit']" class="row-link">Редактировать</a>
-                <button
-                  type="button"
-                  class="row-delete-button"
-                  (click)="deleteBeneficiary(beneficiary)"
-                  [disabled]="isDeleting(beneficiary.id)"
-                >
-                  {{ isDeleting(beneficiary.id) ? 'Удаление...' : 'Удалить' }}
-                </button>
+                <div class="table-actions">
+                  <a [routerLink]="['/beneficiaries', beneficiary.id, 'edit']" class="row-link">Редактировать</a>
+                  <button
+                    type="button"
+                    class="row-delete-button"
+                    (click)="deleteBeneficiary(beneficiary)"
+                    [disabled]="isDeleting(beneficiary.id)"
+                  >
+                    {{ isDeleting(beneficiary.id) ? 'Удаление...' : 'Удалить' }}
+                  </button>
+                </div>
               </td>
             </tr>
           }

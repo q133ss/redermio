@@ -8,7 +8,6 @@
 .form-header,
 .header-actions,
 .filter-actions,
-.actions-cell,
 .pagination {
   display: flex;
   align-items: center;
@@ -53,7 +52,6 @@
 
 .header-actions,
 .filter-actions,
-.actions-cell,
 .pagination {
   gap: 12px;
 }
@@ -103,7 +101,15 @@
 }
 
 .actions-cell {
-  align-items: flex-start;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.table-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
 }
 
 .status-badge {
@@ -145,6 +151,7 @@
   border: none;
   background: none;
   color: #0f766e;
+  white-space: nowrap;
 }
 
 .row-delete-button {
@@ -198,7 +205,8 @@
     align-items: stretch;
   }
 
-  .actions-cell {
+  .table-actions {
     flex-direction: column;
+    align-items: flex-start;
   }
 }

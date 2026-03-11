@@ -100,15 +100,17 @@
                     <td>{{ assignment.service.name }}</td>
                     <td>{{ assignment.provided_at }}</td>
                     <td>{{ assignment.comment || '—' }}</td>
-                    <td>
-                      <button
-                        type="button"
-                        class="delete-link"
-                        (click)="deleteAssignment(assignment)"
-                        [disabled]="isDeletingAssignment(assignment.id)"
-                      >
-                        {{ isDeletingAssignment(assignment.id) ? 'Удаление...' : 'Удалить привязку' }}
-                      </button>
+                    <td class="actions-cell">
+                      <div class="table-actions">
+                        <button
+                          type="button"
+                          class="delete-link"
+                          (click)="deleteAssignment(assignment)"
+                          [disabled]="isDeletingAssignment(assignment.id)"
+                        >
+                          {{ isDeletingAssignment(assignment.id) ? 'Удаление...' : 'Удалить привязку' }}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 }
